@@ -1,0 +1,21 @@
+PORTAL BROWSER v13 — NEW RENDER DEPLOYMENT
+
+1. Extract Portal-Browser-Render-v13-Complete.zip.
+2. Create a new GitHub repository, e.g. portal-browser-v13.
+3. Upload the CONTENTS of the extracted folder to the repository ROOT. package.json, server.js, render.yaml, and public/ must be at the root level. Do not upload the ZIP as a single file or create an extra nested folder.
+4. Commit the files to the main branch.
+5. In Render choose New + → Web Service and connect that new repository.
+6. Use Runtime Node 22, Branch main, Root Directory blank, Build Command `npm install && npm test && npm run preflight`, Start Command `npm start`, Health Check Path `/healthz`.
+7. Add NODE_ENV=production, PORTAL_ACCESS_PASSWORD (your own random value, minimum 20 characters), and PORTAL_SESSION_SECRET (a different random value, minimum 32 characters).
+8. Do not set PORT manually. Render assigns it. No API key, Secret File, or Pre-Deploy Command is required.
+9. Deploy and inspect the build/start logs. Look for 28 Node tests passing, `PORTAL DEPLOYMENT PREFLIGHT PASSED`, and `Portal portal-20261030-13 listening on 0.0.0.0:<port>`.
+10. Open /healthz, sign in at /login, then open Settings → Diagnostics → Run full diagnostics.
+11. Verify an authenticated Wisp WebSocket handshake and a permitted HTTPS page loading through Scramjet. Health checks alone do not prove proxy traffic works.
+
+Important: no package-lock.json is included because npm registry DNS was unavailable in the build environment. The build command therefore uses npm install, not npm ci. After a successful install on a machine with npm registry access, generate and commit package-lock.json, then consider switching the Render build command to `npm ci && npm test && npm run preflight`.
+
+Secret generation (run locally, separately):
+node -e "console.log(require('crypto').randomBytes(24).toString('base64url'))"
+node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"
+
+Keep secrets private. Never commit them to GitHub or paste them into chat.

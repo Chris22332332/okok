@@ -1,0 +1,25 @@
+PORTAL BROWSER v13 — TEST SUMMARY
+Build: portal-20261030-13
+
+PASSED LOCALLY
+- 28 Node.js unit tests.
+- 45 explicit static/syntax/file/configuration PASS checks.
+- HTML selector audit: 56 JavaScript ID lookups exist and 61 HTML IDs are unique.
+- Login inline JavaScript syntax.
+- Settings normalization and import-format tests.
+- Pinned-tab and drag-reordering algorithm tests.
+- Wisp upgrade and security regression tests.
+- ZIP integrity after packaging.
+
+NOT VERIFIED
+- Actual npm dependency installation; registry DNS failed with EAI_AGAIN.
+- package-lock.json and npm ci.
+- Real package preflight, because node_modules is unavailable here.
+- npm audit against a fully installed dependency tree.
+- Real Express/Wisp server startup.
+- Real browser test; Chromium navigation to local HTTP/file resources was blocked by environment policy.
+- Real Wisp WebSocket handshake.
+- Real external proxied HTTPS navigation.
+- Live Render deployment.
+
+Read TEST-RESULTS.md for details. Passing unit and static checks is not proof of end-to-end proxy functionality.

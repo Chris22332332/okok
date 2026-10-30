@@ -1,0 +1,26 @@
+{
+  "name": "portal-browser",
+  "version": "3.2.0",
+  "private": true,
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server.js",
+    "check": "node scripts/check.mjs",
+    "test": "node --test tests/*.test.mjs && npm run check",
+    "prestart": "node scripts/preflight.mjs",
+    "preflight": "node scripts/preflight.mjs",
+    "audit": "npm audit --omit=dev"
+  },
+  "engines": {
+    "node": ">=22.9 <23"
+  },
+  "dependencies": {
+    "@mercuryworkshop/bare-mux": "2.1.9",
+    "@mercuryworkshop/epoxy-transport": "2.1.28",
+    "@mercuryworkshop/libcurl-transport": "1.5.2",
+    "@mercuryworkshop/scramjet": "1.1.0",
+    "@mercuryworkshop/wisp-js": "0.4.1",
+    "express": "5.2.1"
+  }
+}
