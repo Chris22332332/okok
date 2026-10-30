@@ -291,7 +291,7 @@ body.reduced-motion *,body.reduced-motion *:before,body.reduced-motion *:after{a
         </section>
         <section class="settings-section" data-settings-section="connection"><h3>Connection</h3><p class="section-description">Choose a supported transport and inspect the components used by this deployment.</p>
           <div class="setting-row"><div class="setting-copy"><strong>Transport mode</strong><small>Auto tries the available transport. Alternate modes are for connection compatibility, not for overriding a site's or network's access rules.</small></div><select class="setting-select setting-control" id="transport-select"><option value="auto">Automatic</option><option value="libcurl">Libcurl</option><option value="epoxy">Epoxy</option></select></div>
-          <div class="endpoint-card"><div class="endpoint-line"><span>PROXY ROUTE</span><code>/~/sj/</code></div><div class="endpoint-line"><span>WEBSOCKET ENDPOINT</span><code id="wisp-endpoint">wss://…/wisp/</code></div><div class="endpoint-line"><span>ACTIVE BUILD</span><code id="build-label">portal-20261030-13</code></div></div>
+          <div class="endpoint-card"><div class="endpoint-line"><span>PROXY ROUTE</span><code>/~/sj/</code></div><div class="endpoint-line"><span>WEBSOCKET ENDPOINT</span><code id="wisp-endpoint">wss://…/wisp/</code></div><div class="endpoint-line"><span>ACTIVE BUILD</span><code id="build-label">portal-20261030-13.2</code></div></div>
           <div class="permission-note">Portal does not delete Scramjet databases automatically. If the browser reports a missing IndexedDB store, close every Portal tab and clear only this site's stored data using browser site settings.</div>
         </section>
         <section class="settings-section" data-settings-section="advanced"><h3>Advanced</h3><p class="section-description">Back up your preferences or restore the defaults for this device.</p>
@@ -305,7 +305,7 @@ body.reduced-motion *,body.reduced-motion *:before,body.reduced-motion *:after{a
           <div class="permission-note">A successful WebSocket handshake proves the connection opened; it does not alone prove that an external website will load. Test a permitted HTTPS page after diagnostics pass.</div>
         </section>
         <section class="settings-section" data-settings-section="about"><h3>About Portal</h3><p class="section-description">Portal is a private browser workspace built around a separate proxy connection.</p>
-          <div class="endpoint-card"><div class="endpoint-line"><span>APPLICATION</span><code>Portal Browser</code></div><div class="endpoint-line"><span>BUILD</span><code>portal-20261030-13</code></div><div class="endpoint-line"><span>RUNTIME</span><code>Node.js 22</code></div><div class="endpoint-line"><span>BROWSER ENGINE</span><code>Scramjet 1.x</code></div><div class="endpoint-line"><span>TRANSPORT MANAGER</span><code>BareMux 2.x</code></div><div class="endpoint-line"><span>TRANSPORTS</span><code>Libcurl / Epoxy</code></div><div class="endpoint-line"><span>WEBSOCKET</span><code>Wisp JS</code></div></div>
+          <div class="endpoint-card"><div class="endpoint-line"><span>APPLICATION</span><code>Portal Browser</code></div><div class="endpoint-line"><span>BUILD</span><code>portal-20261030-13.2</code></div><div class="endpoint-line"><span>RUNTIME</span><code>Node.js 22</code></div><div class="endpoint-line"><span>BROWSER ENGINE</span><code>Scramjet 1.x</code></div><div class="endpoint-line"><span>TRANSPORT MANAGER</span><code>BareMux 2.x</code></div><div class="endpoint-line"><span>TRANSPORTS</span><code>Libcurl / Epoxy</code></div><div class="endpoint-line"><span>WEBSOCKET</span><code>Wisp JS</code></div></div>
           <p class="section-description">Portal cannot guarantee availability for every website. Sites may block proxy traffic or require their own authentication, permissions, or supported browser features.</p>
         </section>
       </div>
@@ -315,6 +315,6 @@ body.reduced-motion *,body.reduced-motion *:before,body.reduced-motion *:after{a
   </aside>
 </div>
 
-<script type="module" src="/app.js?build=portal-20261030-13"></script>
+<script type="module" src="/app.js?build=portal-20261030-13.2"></script>
 </body>
 </html>

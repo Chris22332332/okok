@@ -47,7 +47,7 @@ console.log(`PASS login inline JavaScript syntax: ${inlineScripts.length} script
 const requiredFiles = [
   'public/index.html', 'public/app.js', 'public/settings-core.js', 'public/tab-core.js', 'public/sw.js', 'public/login.html',
   'package.json', 'server.js', 'src/security.js', 'src/wisp-upgrade.js', 'tests/security.test.mjs', 'tests/wisp-upgrade.test.mjs', 'tests/settings-core.test.mjs', 'tests/tab-core.test.mjs',
-  'scripts/check.mjs', 'scripts/preflight.mjs', 'render.yaml', '.node-version', '.env.example',
+  'scripts/check.mjs', 'scripts/preflight.mjs', 'render.yaml', 'ENVIRONMENT.example.txt', 'tests/upload-layout.test.mjs',
   'README.txt', 'README.md', 'SETUP.md', 'RENDER-DEPLOYMENT.md', 'SECURITY.md', 'ENGINEERING-AUDIT.md', 'TEST-RESULTS.md', 'UPLOAD-TO-GITHUB.txt'
 ];
 for (const file of requiredFiles) {
@@ -98,8 +98,8 @@ if (!appJs.includes('validateSettingsBackup(parsed)') || !appJs.includes('file.s
 if (!html.includes('id="tab-context-menu"') || !html.includes('data-tab-action="others"') || !html.includes('data-tab-action="pin"')) throw new Error('Custom tab context menu is missing');
 if (html.includes('class="quick"') || /YouTube|Reddit|Wikipedia/.test(html)) throw new Error('Preset auto-recommendation links must not be present');
 if (!html.includes('id="bq"') || !html.includes('role="search"')) throw new Error('Address/search bar is missing');
-if (!html.includes('type="module" src="/app.js?build=portal-20261030-13"')) throw new Error('HTML does not load the v13 application script');
-if (!appJs.includes("const BUILD_ID = 'portal-20261030-13'")) throw new Error('App script build identifier is wrong');
+if (!html.includes('type="module" src="/app.js?build=portal-20261030-13.2"')) throw new Error('HTML does not load the v13 application script');
+if (!appJs.includes("const BUILD_ID = 'portal-20261030-13.2'")) throw new Error('App script build identifier is wrong');
 if (!appJs.includes('scramjet.createFrame()') || !appJs.includes('tab.scramFrame.go(url)')) throw new Error('Scramjet managed frame API is missing');
 if (!appJs.includes('connection.setTransport(path, options)')) throw new Error('BareMux transport must be configured before the service worker');
 if (!appJs.includes('tab.navigationRequestId') || !appJs.includes('tabs.includes(tab)')) throw new Error('Navigation race/closed-tab protection is missing');
@@ -116,7 +116,7 @@ if (worker.includes('indexedDB.deleteDatabase') || worker.includes('indexedDB.da
 if (!worker.includes("requestUrl.pathname.startsWith(SCRAMJET_PREFIX)")) throw new Error('Service worker must only intercept proxied-page paths');
 if (!worker.includes('scramjet.loadConfig()') || !worker.includes('scramjet.fetch(event)')) throw new Error('Scramjet request path is incomplete');
 if (!appJs.includes("from './settings-core.js'") || !html.includes('type="module"')) throw new Error('Browser settings module is not loaded as an ES module.');
-if (!worker.includes('portal-20261030-13')) throw new Error('Service worker build identifier is wrong');
+if (!worker.includes('portal-20261030-13.2')) throw new Error('Service worker build identifier is wrong');
 console.log('PASS conservative service-worker routing and Scramjet-managed storage');
 
 const securityImport = server.match(/import\s*\{([^}]+)\}\s*from\s*['"]\.\/src\/security\.js['"]/s);
@@ -137,22 +137,24 @@ if (!server.includes('const secure = Boolean(req.secure)')) throw new Error('Ses
 if (!server.includes('allow_private_ips: false') || !server.includes('allow_loopback_ips: false') || !server.includes('allow_udp_streams: false')) throw new Error('Wisp network safety defaults are missing');
 if (!server.includes('port_whitelist: [80, 443]')) throw new Error('Wisp destination port allowlist is missing');
 if (!server.includes('settingsCoreEntry') || !server.includes('/__portal/diagnostics') || !server.includes("'/healthz'")) throw new Error('Health and diagnostics endpoints are missing');
-if (!server.includes("const BUILD_ID = 'portal-20261030-13'")) throw new Error('Server build identifier is wrong');
+if (!server.includes("const BUILD_ID = 'portal-20261030-13.2'")) throw new Error('Server build identifier is wrong');
 console.log('PASS protected Wisp endpoint, destination policy, and diagnostics');
 
 const login = readFileSync('public/login.html', 'utf8');
 if (!login.includes('/api/login') || !login.includes('autocomplete="current-password"')) throw new Error('Private sign-in page is incomplete');
 if (login.includes('YOUR_PASSWORD')) throw new Error('Do not ship a hard-coded password');
 if (!render.includes('PORTAL_ACCESS_PASSWORD') || !render.includes('PORTAL_SESSION_SECRET') || !render.includes('generateValue: true') || !render.includes('healthCheckPath: /healthz')) throw new Error('Render Blueprint must define both secrets and a health check');
-if (!render.includes('name: portal-browser-v13')) throw new Error('Render Blueprint must identify this as the v13 service.');
+if (!render.includes('name: portal-browser-v13-2')) throw new Error('Render Blueprint must identify this as the v13 service.');
 if (!render.includes('buildCommand: npm install && npm test && npm run preflight') || !render.includes('startCommand: npm start')) throw new Error('Render must install dependencies, run tests, and verify real package exports/assets before deploying');
-if (readFileSync('.node-version', 'utf8').trim() !== '22') throw new Error('Node version must be pinned to 22');
+if (existsSync('.node-version') && readFileSync('.node-version', 'utf8').trim() !== '22') throw new Error('Optional .node-version file, when present, must contain 22');
+console.log('PASS Node version selected by package.json engines; hidden Node dotfile is optional');
+if (existsSync('.env.example')) console.log('INFO legacy .env.example found; ENVIRONMENT.example.txt is the visible template used by this build');
 console.log('PASS private sign-in and new-service Render configuration');
 
 if (!server.includes("const listenHost = onRender ? '0.0.0.0' : '127.0.0.1'")) throw new Error('Local unauthenticated development must bind to loopback only');
 for (const file of ['server.js', 'public/app.js', 'public/sw.js', 'public/index.html']) {
   const content = readFileSync(file, 'utf8');
   if (content.includes('portal-20261030-10')) throw new Error(`Old v10 build identifier remains in ${file}`);
-  if (!content.includes('portal-20261030-13')) throw new Error(`v13 build identifier missing from ${file}`);
+  if (!content.includes('portal-20261030-13.2')) throw new Error(`v13 build identifier missing from ${file}`);
 }
 console.log('PASS matching v13 build identifier and safe local binding across server, app, HTML, and service worker');

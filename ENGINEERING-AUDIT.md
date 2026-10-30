@@ -1,36 +1,35 @@
-# Portal Browser v13 — Engineering Audit Notes
+# Portal Browser v13.2 — Engineering Audit
 
-## Confirmed source findings and changes
+## Existing architecture retained
 
-1. **Wisp URL normalization:** the upgrade request path is normalized to `/wisp/` before Wisp routing; query strings cannot change the Wisp route.
-2. **WebSocket request validation:** upgrades require GET, `Upgrade: websocket`, and `Connection: upgrade`.
-3. **HTTP rejection reliability:** Origin/session failures use `socket.end()` to flush an HTTP response.
-4. **Wisp error handling:** synchronous throws and asynchronous route rejections are handled.
-5. **Local binding:** local development binds to `127.0.0.1`; Render binds to `0.0.0.0` and requires credentials.
-6. **Trusted proxy handling:** Express trusts one Render proxy hop only on Render. Secure cookies use `req.secure`.
-7. **Transport selection:** invalid overrides normalize to Auto; Auto attempts Libcurl then Epoxy.
-8. **Proxy retries:** already-initialized Scramjet and BareMux instances are reused after partial initialization.
-9. **Service-worker scope:** only Scramjet-prefixed requests go through Scramjet; shell and worker/transport assets bypass it.
-10. **Storage safety:** Portal does not inspect, delete, or close Scramjet IndexedDB; Scramjet owns its schema.
-11. **Preflight coverage:** real package imports, expected exports, BareMux browser bundle marker, transport assets, and local browser modules are checked before startup.
-12. **Diagnostics:** `/__portal/diagnostics` checks Scramjet, BareMux, Libcurl, Epoxy, settings-core, and tab-core assets.
-13. **Wisp tests:** malformed upgrade requests, path normalization, Origin/session rejection, and sync/async routing errors have dedicated tests.
-14. **Settings UI:** expanded from five to ten functional sections: General, Appearance, Search, Tabs, Privacy, Permissions, Connection, Advanced, Diagnostics, and About.
-15. **Settings backup:** import/export/reset is implemented; imported files are size-limited and schema-validated. Unknown settings are discarded and boolean settings use strict type validation.
-16. **Tab controls:** maximum tabs is configurable (8/12/16/24), compact tabs are supported, and tabs can be pinned/unpinned and dragged within their pinned/unpinned group. Pinned URLs are restored with the session.
-17. **Regression tests:** pure settings and tab-order utilities have dedicated Node tests.
+- Node.js 22 / Express 5.
+- Scramjet 1.1.0 with its v1 controller API.
+- BareMux 2.1.9.
+- Libcurl transport 1.5.2.
+- Epoxy transport 2.1.28.
+- Wisp JS 0.4.1.
+- Password-based hosted access, signed session cookies, and same-origin WebSocket validation.
+- Purple browser UI with tabs, bookmarks, history, settings, diagnostics, and local session features.
 
-## Version-generation decision
+## Concrete deployment defect reproduced from Render log
 
-This package retains Scramjet 1.1.0 + BareMux 2.1.9 + Libcurl 1.5.2 + Epoxy 2.1.28 + Wisp JS 0.4.1 because the supplied browser code uses the Scramjet 1.x controller and BareMux's path-based `setTransport()` API. BareMux is deprecated upstream; Scramjet 2.x uses a different coordinated controller/utility/transport architecture. Updating one package alone would mix incompatible APIs. A full migration is a separate project-sized change.
+The owner's Render build selected Node 22.23.4 from `package.json`, installed 98 packages, reported 0 vulnerabilities, and passed all 28 tests. It then failed because `scripts/check.mjs` required `.node-version` to exist. That hidden file was absent from the Git checkout even though the package engine was already selecting Node 22 correctly.
 
-## Remaining verification gaps
+The previous patch made `.node-version` optional. A second likely failure was then identified: `.env.example` was also hidden and still listed as a required file. A GitHub browser upload can omit hidden files, so the checker could simply have failed on the next hidden file.
 
-- No `package-lock.json`: the npm registry did not resolve from this authoring environment (`EAI_AGAIN`). Direct dependencies are exact-pinned, but transitive dependencies are not lockfile-pinned.
-- Real npm installation and actual package preflight could not be completed here.
-- Real Express/Wisp process startup was not verified.
-- Chromium local/file navigation was blocked by environment policy; no genuine browser UI automation or screenshot is claimed.
-- Live Wisp WebSocket handshake and external HTTPS navigation through Scramjet remain unverified.
-- `npm audit` was not completed against a fully installed dependency tree.
+## v13.2 corrections
 
-These gaps must be closed on an npm-connected machine and then on the new Render deployment before claiming end-to-end proxy functionality.
+1. Node version is selected from `package.json` `engines` (`>=22.9 <23`); no `.node-version` file is required.
+2. The hidden `.env.example` template is now `ENVIRONMENT.example.txt`, a normal visible file.
+3. The structural checker requires only visible project files.
+4. A regression test deliberately copies the project while omitting every hidden dotfile, then runs the structural checker. It passes.
+5. A clean mock preflight run passed all seven server package imports and expected browser asset checks; this validates the preflight code path, not the real installed packages.
+6. The build ID is consistently `portal-20261030-13.2` across server, HTML, app JS, and service worker.
+
+## Compatibility decision
+
+The browser code is built against Scramjet 1.x and BareMux 2.x. The matching transport generations are Libcurl 1.x and Epoxy 2.x. Do not upgrade one of these packages independently. Moving to Scramjet 2.x requires a coordinated architecture migration with the newer controller and transport interface, not a one-package bump.
+
+## Remaining verification boundary
+
+The source-level checks and Node unit tests pass. This environment could not complete an npm dependency installation, so the real installed-package preflight and live proxy path remain unverified. The next Render build must be treated as the next integration test, not as guaranteed success. If preflight reports a missing export or asset, fix that exact mismatch before proceeding to the server/Wisp/browser tests.

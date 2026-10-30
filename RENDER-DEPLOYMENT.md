@@ -1,12 +1,13 @@
-# Portal Browser v13 — New Render Web Service
+# Portal Browser v13.2 — New Render Web Service
 
 ## GitHub
 
-1. Create a new repository, for example `portal-browser-v13`.
+1. Create a new repository, for example `portal-browser-v13-2`.
 2. Extract the ZIP.
-3. Upload the contents of the extracted folder to the repository root. Do not upload the ZIP itself and do not create an extra nested folder.
-4. Verify `package.json`, `server.js`, and `render.yaml` are at the top level.
-5. Commit to `main`.
+3. Upload the contents of the extracted folder to the repository root. Do not upload the ZIP itself or create an extra nested folder.
+4. Verify `package.json`, `server.js`, `render.yaml`, `ENVIRONMENT.example.txt`, and the `public`, `src`, `scripts`, and `tests` folders are at the top level.
+5. The project deliberately does not require hidden dotfiles such as `.node-version`, `.env.example`, or `.gitignore` for its tests to pass. Node is selected from `package.json` `engines`.
+6. Commit to `main`.
 
 ## Render service settings
 
@@ -14,7 +15,7 @@ Create **New + → Web Service** and connect the new repository.
 
 | Setting | Value |
 |---|---|
-| Name | `portal-browser-v13` (or another available name) |
+| Name | `portal-browser-v13-2` (or another available name) |
 | Runtime | Node |
 | Branch | `main` |
 | Root Directory | Leave blank |
@@ -23,7 +24,7 @@ Create **New + → Web Service** and connect the new repository.
 | Health Check Path | `/healthz` |
 | Instance | Free for initial verification |
 
-The project does not include `package-lock.json`. The npm registry could not be reached from the environment used to prepare this package, so a lockfile could not be honestly generated. The build command therefore uses `npm install`, not `npm ci`. After installation succeeds on a computer with registry access, run `npm install`, commit the generated `package-lock.json`, and then change the Render build command to `npm ci && npm test && npm run preflight`.
+The project does not include `package-lock.json` because the authoring environment could not complete a registry download. The build therefore uses `npm install`, not `npm ci`. After a successful install on a computer with registry access, you can generate and commit a lockfile; only then change the build command to `npm ci && npm test && npm run preflight`.
 
 ## Environment variables
 
@@ -48,7 +49,7 @@ Do not set `PORT` manually; Render supplies it. No API key, Secret File, or Pre-
 
 ## Expected build and startup
 
-The build should show 28 Node unit tests passing, followed by static/syntax checks and:
+The build should show 29 Node unit tests passing, followed by the structural checks and:
 
 ```text
 PORTAL DEPLOYMENT PREFLIGHT PASSED
@@ -57,7 +58,7 @@ PORTAL DEPLOYMENT PREFLIGHT PASSED
 The startup log should include:
 
 ```text
-Portal portal-20261030-13 listening on 0.0.0.0:<Render-assigned-port>
+Portal portal-20261030-13.2 listening on 0.0.0.0:<Render-assigned-port>
 Access password: enabled
 ```
 
@@ -67,7 +68,7 @@ The health endpoint should resemble:
 {
   "ok": true,
   "service": "portal-browser",
-  "build": "portal-20261030-13",
+  "build": "portal-20261030-13.2",
   "authEnabled": true,
   "nodeMajor": 22
 }

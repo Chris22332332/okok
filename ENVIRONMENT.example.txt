@@ -1,0 +1,6 @@
+# Copy these values into a local .env file only when testing locally.
+# For Render, add them in the service Environment dashboard instead.
+NODE_ENV=development
+PORTAL_ACCESS_PASSWORD=replace-with-a-private-random-password-of-at-least-20-characters
+PORTAL_SESSION_SECRET=replace-with-a-different-random-secret-of-at-least-32-characters
+# PORT is assigned automatically by Render. Do not set it manually there.

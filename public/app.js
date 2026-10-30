@@ -4,7 +4,7 @@ import { reorderTabsWithinGroup, setTabPinOrder } from './tab-core.js';
 'use strict';
 
 const $ = (id) => document.getElementById(id);
-const BUILD_ID = 'portal-20261030-13';
+const BUILD_ID = 'portal-20261030-13.2';
 const DEFAULT_MAX_TABS = 16;
 const ALLOWED_MAX_TABS = [8, 12, 16, 24];
 const SCRIPT_TIMEOUT_MS = 20000;

@@ -1,6 +1,6 @@
 // Portal Browser v10 service worker. Scramjet manages its own IndexedDB schema;
 // Portal deliberately does not inspect, delete, or close Scramjet databases.
-importScripts('/scram/scramjet.all.js?build=portal-20261030-13');
+importScripts('/scram/scramjet.all.js?build=portal-20261030-13.2');
 
 const { ScramjetServiceWorker } = $scramjetLoadWorker();
 const scramjet = new ScramjetServiceWorker();
