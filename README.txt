@@ -1,4 +1,4 @@
-PORTAL BROWSER v13
+PORTAL BROWSER v13.2
 
 Start with README.md for the project overview.
 Local setup: SETUP.md

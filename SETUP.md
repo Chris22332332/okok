@@ -1,4 +1,4 @@
-# Portal Browser — Local Windows Setup
+# Portal Browser v13.2 — Local Windows Setup
 
 ## 1. Install Node.js
 
@@ -8,6 +8,8 @@ Install Node.js 22 (22.9 or newer, below 23) from https://nodejs.org/. Open Comm
 node -v
 npm -v
 ```
+
+The required Node version is declared in `package.json`; no hidden `.node-version` file is needed.
 
 ## 2. Extract the project
 
@@ -19,7 +21,7 @@ dir package.json
 
 ## 3. Configure local secrets
 
-Copy `.env.example` to `.env`. Use two different random values for `PORTAL_ACCESS_PASSWORD` and `PORTAL_SESSION_SECRET` if you want local sign-in enabled. Do not commit `.env`.
+Optionally copy `ENVIRONMENT.example.txt` to `.env`. Use two different random values for `PORTAL_ACCESS_PASSWORD` and `PORTAL_SESSION_SECRET` if you want local sign-in enabled. Do not commit `.env`.
 
 Generate values with Node:
 

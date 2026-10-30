@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: portal-browser-v13
+    name: portal-browser-v13-2
     runtime: node
     plan: free
     buildCommand: npm install && npm test && npm run preflight

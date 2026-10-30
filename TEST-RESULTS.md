@@ -1,30 +1,34 @@
-# Portal Browser v13 — Test Results
+# Portal Browser v13.2 — Test Results
 
-## Passed locally
+Tested locally with Node.js v22.16.0. The package declares `node >=22.9 <23`; the Render log supplied by the owner previously confirmed Render selected Node v22.23.4.
 
-- **28 Node.js built-in unit tests passed.** Coverage includes sessions, token validation, login throttling, Origin validation, Wisp upgrade handling, settings normalization/import validation, and pinned/drag-reordered tab ordering.
-- **45 explicit static/syntax/file/configuration PASS checks** printed by the project check suite.
-- Node syntax checks passed for server, security, Wisp upgrade helper, service worker, settings module, tab module, browser app, and preflight.
-- HTML selector audit: 56 IDs referenced through the app's `$()` helper exist; 61 HTML IDs are unique; no duplicate IDs were found. All ten settings navigation buttons have accessible names and mobile tooltips.
-- Login page inline JavaScript syntax check passed.
-- Required project file structure and Render Blueprint checks passed.
-- Settings core unit tests verify strict booleans, enum validation, tab limit allowlist, unknown-property removal, and settings backup format validation.
-- Tab core unit tests verify pin/unpin grouping, same-group reordering, preventing movement between pinned and unpinned groups, and non-mutating reorder operations.
-- Wisp upgrade tests cover path normalization, ignored paths, Origin/session rejection, invalid upgrade headers, synchronous route errors, and asynchronous route rejections.
-- The archive's integrity was checked after packaging.
+## Tests that passed
 
-## Not verified in this environment
+- `npm test`: 29/29 Node unit tests passed.
+- `npm run check`: 46 PASS checks covering syntax, import/export, HTML selector, duplicate-ID, settings-control, service-worker, security wiring, Render metadata, build-ID, and required visible files passed.
+- Upload-layout regression test: a clean copy with all hidden dotfiles omitted still passes `scripts/check.mjs`. This reproduces the GitHub browser-upload behavior that caused the previous `.node-version` failure and anticipates omission of `.env.example` / `.gitignore` as well.
+- ZIP archive integrity: verified after packaging.
 
-- Fresh installation of actual npm dependencies. `npm install` could not complete because DNS resolution for `registry.npmjs.org` failed (`EAI_AGAIN` / host resolution failure).
-- `package-lock.json` generation and reproducible `npm ci` installation.
-- Real package preflight against installed packages. `node_modules` is unavailable; the real preflight correctly reports missing dependencies in this environment.
-- `npm audit` against a fully installed dependency tree.
-- Actual Express server startup using the real dependencies.
-- Real browser rendering/interaction test. Chromium was available but this environment blocked both local HTTP and file navigation with `net::ERR_BLOCKED_BY_ADMINISTRATOR`.
-- Real authenticated Wisp WebSocket handshake.
-- Real Scramjet transport fetch and external HTTPS website navigation.
-- Live Render deployment test.
+## Evidence from the owner's Render log
 
-## Interpretation
+- Render selected Node.js v22.23.4 from `package.json`'s `engines` declaration.
+- `npm install` completed and added 98 packages.
+- npm reported 0 vulnerabilities in that deployment.
+- All 28 tests in the then-deployed v13 build passed.
+- The build then failed in `scripts/check.mjs` because the hidden `.node-version` file was absent from the Git checkout.
 
-The 28 passing tests and 45 static checks validate the code paths that can be tested without the external packages. They do not prove the actual dependency tree installs or that proxy traffic works end-to-end. Render's build command runs `npm install && npm test && npm run preflight`; on Render, preflight imports the actual installed server modules and checks their exports and required asset files. After deployment, confirm the Wisp handshake and load a real permitted HTTPS page. Do not describe the proxy as fully verified until those live tests pass.
+## Fixes made for v13.2
+
+- Removed `.node-version` from the delivery package. `package.json` is the authoritative Node version declaration.
+- Replaced hidden `.env.example` with visible `ENVIRONMENT.example.txt`.
+- Removed all hidden files from the checker's required-file list.
+- Added `tests/upload-layout.test.mjs`, which copies the project without hidden dotfiles and runs the structural checker in that simulated GitHub-upload layout.
+- Bumped the coordinated application, server, HTML, and service-worker build identifier to `portal-20261030-13.2`.
+
+## Not yet verified
+
+- A fresh npm dependency installation in this authoring environment timed out, so there is no locally generated `package-lock.json`. An offline `npm audit` also cannot run without a lockfile. The owner-provided Render install log reported 0 vulnerabilities for the prior v13 install.
+- The actual package preflight (`npm run preflight`) has not yet been run against real installed modules in this environment.
+- No genuine browser automation run, Wisp handshake, or external proxied navigation was completed here.
+
+The owner's previous Render log proves dependency installation succeeded for the prior v13 dependency set, but it does not prove that v13.2's real-package preflight, server startup, Wisp handshake, or website navigation will succeed. Those must be confirmed in the next Render deployment.

@@ -11,7 +11,7 @@ import * as epoxy from '@mercuryworkshop/epoxy-transport';
 import { createLoginLimiter, createSessionToken, isSameOriginRequest, parseCookies, SESSION_COOKIE, SESSION_TTL_SECONDS, safeEqualText, verifySessionToken } from './src/security.js';
 import { handleWispUpgrade } from './src/wisp-upgrade.js';
 
-const BUILD_ID = 'portal-20261030-13';
+const BUILD_ID = 'portal-20261030-13.2';
 const app = express();
 const server = createServer(app);
 const publicPath = fileURLToPath(new URL('./public', import.meta.url));

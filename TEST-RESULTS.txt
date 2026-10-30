@@ -1,25 +1,17 @@
-PORTAL BROWSER v13 — TEST SUMMARY
-Build: portal-20261030-13
+Portal Browser v13.2 — local results
 
-PASSED LOCALLY
-- 28 Node.js unit tests.
-- 45 explicit static/syntax/file/configuration PASS checks.
-- HTML selector audit: 56 JavaScript ID lookups exist and 61 HTML IDs are unique.
-- Login inline JavaScript syntax.
-- Settings normalization and import-format tests.
-- Pinned-tab and drag-reordering algorithm tests.
-- Wisp upgrade and security regression tests.
-- ZIP integrity after packaging.
+npm test: 29/29 unit tests passed.
+npm run check: 46 PASS checks for syntax, HTML selector audit, project files, package metadata, UI controls, service-worker rules, server security wiring, Render configuration, and build IDs passed.
+GitHub browser-upload simulation: passed with all hidden dotfiles omitted.
+ZIP integrity: verified when packaged.
 
-NOT VERIFIED
-- Actual npm dependency installation; registry DNS failed with EAI_AGAIN.
-- package-lock.json and npm ci.
-- Real package preflight, because node_modules is unavailable here.
-- npm audit against a fully installed dependency tree.
-- Real Express/Wisp server startup.
-- Real browser test; Chromium navigation to local HTTP/file resources was blocked by environment policy.
-- Real Wisp WebSocket handshake.
-- Real external proxied HTTPS navigation.
-- Live Render deployment.
+Owner-provided Render log from prior v13 commit:
+- Node 22.23.4 selected from package.json.
+- npm install added 98 packages.
+- npm reported 0 vulnerabilities.
+- All 28 tests in that commit passed.
+- Build then failed because a prior checker required hidden .node-version.
 
-Read TEST-RESULTS.md for details. Passing unit and static checks is not proof of end-to-end proxy functionality.
+v13.2 removes that hidden-file dependency and also removes the next likely hidden-file failure (.env.example). It supplies ENVIRONMENT.example.txt and includes a regression test for the hidden-dotfile-free upload layout.
+
+Not yet verified here: clean actual npm dependency install, real package preflight, production server startup, real Wisp WebSocket handshake, browser automation, and actual external website navigation. Do not interpret static/unit tests as proof that the proxy works.
